@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4 text-center">Liste des auteurs</h1>
+
+        {# Vérifier si le tableau existe et n’est pas vide #}
+        {% if authors is defined and authors is not empty %}
+            <table class="table table-bordered table-striped text-center align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Photo</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Nombre de livres</th>
+                        <th>Détails</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for author in authors %}
+                        <tr>
+                            <td>
+                                <img src="{{ author.picture }}" alt="{{ author.username }}" class="img-thumbnail" width="80">
+                            </td>
+                            <td><strong>{{ author.username|upper }}</strong></td>
+                            <td>{{ author.email }}</td>
+                            <td>{{ author.nb_books }}</td>
+                            <td>
+                                <a href="{{ path('author_details', {id: author.id}) }}" 
+                                   class="btn btn-sm btn-primary">
+                                    Voir détails
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="alert alert-info mt-3">
+                <p><strong>Nombre d'auteurs :</strong> {{ authors|length }}</p>
+                <p>
+                    <strong>Total de livres :</strong> 
+                    {{ authors|map(a => a.nb_books)|reduce((carry, v) => carry + v) }}
+                </p>
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center">
+                Aucun auteur trouvé.
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
