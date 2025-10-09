@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% for author in author %}
+                        <tr>
+                            <td>{{ author.username }}</td>
+                            <td>{{ author.Email }}</td>
+                        </tr>
+                    {% endfor %}
+{% endblock %}
