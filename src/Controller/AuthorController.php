@@ -9,6 +9,9 @@ use App\Repository\AuthorRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Author; 
+use App\Form\AuthorType;
+use Symfony\Component\HttpFoundation\Request;
+
 
 final class AuthorController extends AbstractController
 {
@@ -19,6 +22,60 @@ final class AuthorController extends AbstractController
             'controller_name' => 'AuthorController',
         ]);
     }
+
+
+    #[Route('/addAuth2', name: 'add_author')]
+    public function addAuth(ManagerRegistry $em ,Request $request): Response
+    {
+        $auth1= new Author();
+       $form=$this->createForm(AuthorType::class,$auth1);
+        $form->handleRequest($request);
+        if($form->isSubmitted()){
+            $em->getManager()->persist($auth1);
+            $em->getManager()->flush();
+            return $this->redirectToRoute('get_author_2');
+        }
+        return $this->render('author/AddAuthor.html.twig', [
+            'f'=>$form->createView()
+        ]);
+    }
+
+    #[Route('/updateAuth2/{id}',name:'app_author_update')]
+    public function updateAuthor(Request $req,EntityManagerInterface $em,Author $author
+    ,AuthorRepository $AuthorRepository){
+        //$author = $repo->find($id);
+        $form = $this->createForm(AuthorType::class,$author);
+        $form->handleRequest($req);
+        if($form->isSubmitted())
+        {
+        $em->flush();
+        return $this->redirectToRoute('get_author_2');
+        }
+       
+        return $this->render('author/updateAuthor.html.twig',[
+            'f'=>$form->createView()
+        ]);
+    }
+
+    #[Route('/deleteAuth2/{id}', name: 'app_delete')]
+    public function deleteAuthor(ManagerRegistry $ManagerRegistry,AuthorRepository $AuthorRepository,$id): Response
+    {
+        $auth = $AuthorRepository->find($id);
+        $ManagerRegistry->getManager()->remove($auth);
+        $ManagerRegistry->getManager()->flush();
+        return $this->redirectToRoute('get_author_2');}
+
+     #[Route('/homeAuth', name: 'get_author_2')]
+         public function getAll2(AuthorRepository $AuthorRepository): Response
+         {
+        $authors = $AuthorRepository->findAll();
+
+        return $this->render('author/home.html.twig', [
+            'authors' => $authors,
+        ]);
+    }
+
+///////////////statique////////////////////////////////////////////////
      #[Route('/author/showAuthor', name: 'app_showAuthor')]
     public function showAuthor(): Response
     {

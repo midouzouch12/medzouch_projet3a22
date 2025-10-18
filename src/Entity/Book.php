@@ -16,17 +16,20 @@ class Book
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $publicationDate = null;
+    #[ORM\Column(type: 'date')]
+    private ?\DateTimeInterface $publicationDate = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $enabled = null;
+    #[ORM\Column(type: 'boolean')] 
+    private ?bool $enabled = null;
 
     #[ORM\Column]
     private ?bool $published = null;
 
     #[ORM\ManyToOne(inversedBy: 'books')]
     private ?Author $author_book = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $category = null;
 
     public function getId(): ?int
     {
@@ -45,27 +48,25 @@ class Book
         return $this;
     }
 
-    public function getPublicationDate(): ?string
+   public function getPublicationDate(): ?\DateTimeInterface
     {
         return $this->publicationDate;
     }
 
-    public function setPublicationDate(string $publicationDate): static
+    public function setPublicationDate(\DateTimeInterface $publicationDate): static
     {
         $this->publicationDate = $publicationDate;
-
         return $this;
     }
 
-    public function getEnabled(): ?string
+    public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
-    public function setEnabled(string $enabled): static
+    public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
-
         return $this;
     }
 
@@ -89,6 +90,18 @@ class Book
     public function setAuthorBook(?Author $author_book): static
     {
         $this->author_book = $author_book;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

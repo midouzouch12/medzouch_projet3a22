@@ -40,4 +40,36 @@ class BookRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function findPublishedBooks(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.published = :published')
+            ->setParameter('published', true)
+            ->orderBy('b.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    
+    public function countPublishedBooks(): int
+    {
+        return $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->where('b.published = :published')
+            ->setParameter('published', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    
+    public function countUnpublishedBooks(): int
+    {
+        return $this->createQueryBuilder('b')
+            ->select('COUNT(b.id)')
+            ->where('b.published = :published')
+            ->setParameter('published', false)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
